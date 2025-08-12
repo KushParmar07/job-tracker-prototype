@@ -32,51 +32,53 @@ const ApplicationTile = (props: ApplicationTileProps) => {
   };
 
   return (
-    <div className="card bg-primary w-full max-w-none lg:max-w-none p-3 sm:p-4 lg:p-5 mx-4 sm:mx-8 lg:ml-20 lg:mr-4 my-3 sm:my-4 lg:my-5 flex flex-grow">
-      {/* Header section */}
-      <div className="flex flex-col sm:flex-row border-b-3 border-primary-content justify-between gap-2 sm:gap-0">
-        <h1 className="font-bold text-xl sm:text-xl lg:text-2xl text-primary-content pb-1">
-          {props.position}
-        </h1>
-        <div className="flex flex-row items-center gap-2">
-          <div className="card bg-accent min-w-fit h-8 flex items-center justify-center text-center text-accent-content text-xs sm:text-sm font-bold px-3 py-1 whitespace-nowrap">
-            {props.status}
-          </div>
-          <button
-            className="btn bg-red-500 text-white border-none h-8 px-3 py-1 text-xs sm:text-sm font-semibold hover:bg-red-600"
-            onClick={() => deleteApplication(props.id)}
-          >
-            Delete
-          </button>
+    <div className="card bg-primary w-full max-w-none lg:max-w-none p-2 sm:p-2 lg:p-3 mx-4 sm:mx-8 lg:ml-20 lg:mr-4 my-2 sm:my-2 lg:my-3 flex flex-col relative">
+      {/* Delete button and Status section - aligned horizontally in top right */}
+      <div className="absolute top-1 right-1 flex items-center gap-1">
+        <div className="card bg-accent min-w-fit h-5 flex items-center justify-center text-center text-accent-content text-xs font-bold px-2 py-0 mt-3 whitespace-nowrap">
+          {props.status}
         </div>
+        <button
+          className="w-5 h-5 bg-red-500 text-white border-none rounded-full flex items-center justify-center text-xs font-bold hover:bg-red-600 z-10 hover:cursor-pointer mx-1 mb-2"
+          onClick={() => deleteApplication(props.id)}
+        >
+          X
+        </button>
       </div>
 
-      {/* Main content */}
-      <div className="flex flex-col sm:flex-row justify-between mt-2 gap-1 sm:gap-0">
-        <p className="text-base sm:text-lg text-slate-700 font-semibold border-none">
+      {/* Main single row with all content */}
+      <div className="flex items-center border-b border-primary-content pb-1 pr-16">
+        <h1 className="font-bold text-lg sm:text-lg lg:text-xl text-primary-content mr-3">
+          {props.position}
+        </h1>
+        <span className="text-xs text-slate-600 mr-1">at</span>
+        <p className="text-sm text-slate-700 font-medium mr-3">
           {props.company}
         </p>
         {props.salary && (
-          <p className="text-sm sm:text-base text-slate-700 font-semibold border-none">
-            {`$${props.salary}`}
-          </p>
+          <>
+            <span className="text-xs text-slate-600 mr-1">•</span>
+            <p className="text-sm text-slate-700 font-semibold">
+              ${props.salary}
+            </p>
+          </>
         )}
       </div>
 
-      {/* Bottom section */}
+      {/* Bottom section - Show/Hide Details */}
       <div className={`flex flex-col ${isOpen ? "flex-col-reverse" : ""}`}>
         <button
           onClick={toggleDetails}
-          className="btn bg-secondary text-secondary-content border-none max-h-5.5 ml-auto px-2 sm:px-3 py-1 text-xs sm:text-sm font-semibold"
+          className="hover:text-gray-300 hover:cursor-pointer text-secondary-content border-none ml-auto px-1 py-0 text-xs font-semibold mt-1"
         >
           {isOpen ? "Hide Details" : "Show Details"}
         </button>
         {isOpen && (
-          <div className="flex flex-col lg:flex-row mt-2 gap-2 lg:gap-0">
-            <p className="text-sm sm:text-base text-slate-600 font-semibold border-none lg:mr-4">
+          <div className="flex flex-col lg:flex-row mt-1 gap-1 lg:gap-0">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium border-none lg:mr-4">
               {formatDate(new Date(props.dateApplied))}
             </p>
-            <p className="text-sm sm:text-base text-slate-600 font-semibold border-none lg:ml-auto">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium border-none lg:ml-auto">
               {props.description}
             </p>
           </div>
