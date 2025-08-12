@@ -22,10 +22,16 @@ const ApplicationTile = (props: ApplicationTileProps) => {
 
   const deleteApplication = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5001/api/applications/${id}`);
-      props.setApplications((prev) => {
-        return prev.filter((app) => app.id !== id);
-      });
+      if (
+        window.confirm(
+          `Are you sure you want to delete ${props.position} at ${props.company}?`
+        )
+      ) {
+        await axios.delete(`http://localhost:5001/api/applications/${id}`);
+        props.setApplications((prev) => {
+          return prev.filter((app) => app.id !== id);
+        });
+      }
     } catch (error) {
       console.error("Error deleting application:", error);
     }
