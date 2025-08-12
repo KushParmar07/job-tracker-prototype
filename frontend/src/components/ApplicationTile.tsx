@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { formatDate } from "../lib/utils";
+import axios from "axios";
 
 interface ApplicationTileProps {
   company: string;
@@ -7,6 +9,8 @@ interface ApplicationTileProps {
   status: string;
   salary?: string | null;
   description?: string;
+  id: string;
+  setApplications: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const ApplicationTile = (props: ApplicationTileProps) => {
@@ -16,15 +20,34 @@ const ApplicationTile = (props: ApplicationTileProps) => {
     setIsOpen(!isOpen);
   };
 
+  const deleteApplication = async (id: string) => {
+    try {
+      await axios.delete(`http://localhost:5001/api/applications/${id}`);
+      props.setApplications((prev) => {
+        return prev.filter((app) => app.id !== id);
+      });
+    } catch (error) {
+      console.error("Error deleting application:", error);
+    }
+  };
+
   return (
-    <div className="card bg-primary w-full max-w-none lg:max-w-1/3 p-3 sm:p-4 lg:p-5 mx-4 sm:mx-8 lg:ml-20 lg:mr-4 my-3 sm:my-4 lg:my-5 flex flex-grow">
+    <div className="card bg-primary w-full max-w-none lg:max-w-none p-3 sm:p-4 lg:p-5 mx-4 sm:mx-8 lg:ml-20 lg:mr-4 my-3 sm:my-4 lg:my-5 flex flex-grow">
       {/* Header section */}
       <div className="flex flex-col sm:flex-row border-b-3 border-primary-content justify-between gap-2 sm:gap-0">
         <h1 className="font-bold text-xl sm:text-xl lg:text-2xl text-primary-content pb-1">
           {props.position}
         </h1>
-        <div className="card bg-accent min-w-fit h-fit sm:h-1/2 justify-around text-center text-accent-content text-xs sm:text-sm font-bold flex-end mb-1 p-0.5 whitespace-nowrap px-2">
-          {props.status}
+        <div className="flex flex-row items-center gap-2">
+          <div className="card bg-accent min-w-fit h-8 flex items-center justify-center text-center text-accent-content text-xs sm:text-sm font-bold px-3 py-1 whitespace-nowrap">
+            {props.status}
+          </div>
+          <button
+            className="btn bg-red-500 text-white border-none h-8 px-3 py-1 text-xs sm:text-sm font-semibold hover:bg-red-600"
+            onClick={() => deleteApplication(props.id)}
+          >
+            Delete
+          </button>
         </div>
       </div>
 
@@ -33,9 +56,11 @@ const ApplicationTile = (props: ApplicationTileProps) => {
         <p className="text-base sm:text-lg text-slate-700 font-semibold border-none">
           {props.company}
         </p>
-        <p className="text-sm sm:text-base text-slate-700 font-semibold border-none">
-          {props.salary}
-        </p>
+        {props.salary && (
+          <p className="text-sm sm:text-base text-slate-700 font-semibold border-none">
+            {`$${props.salary}`}
+          </p>
+        )}
       </div>
 
       {/* Bottom section */}
@@ -49,7 +74,7 @@ const ApplicationTile = (props: ApplicationTileProps) => {
         {isOpen && (
           <div className="flex flex-col lg:flex-row mt-2 gap-2 lg:gap-0">
             <p className="text-sm sm:text-base text-slate-600 font-semibold border-none lg:mr-4">
-              {props.dateApplied}
+              {formatDate(new Date(props.dateApplied))}
             </p>
             <p className="text-sm sm:text-base text-slate-600 font-semibold border-none lg:ml-auto">
               {props.description}

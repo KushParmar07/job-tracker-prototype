@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 interface Application {
-  id: number;
+  id: string;
   [key: string]: any;
 }
 
@@ -43,6 +43,9 @@ function App() {
                 dateApplied={application.dateApplied}
                 status={application.currentStatus.name}
                 salary={application.salary}
+                description={application.jobDescription}
+                id={application.id}
+                setApplications={setApplications}
               />
             </li>
           ))}

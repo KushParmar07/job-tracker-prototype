@@ -7,6 +7,9 @@ async function getApplications(_: Request, res: Response) {
       include: {
         currentStatus: true,
       },
+      orderBy: {
+        dateApplied: "desc",
+      },
     });
     res.status(200).json(applications);
   } catch (error) {
