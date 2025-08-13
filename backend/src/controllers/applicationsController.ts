@@ -45,7 +45,7 @@ async function createApplication(req: Request, res: Response) {
         companyName: req.body.companyName,
         position: req.body.position,
         salary: Number(req.body.salary),
-        jobDescription: req.body.description,
+        jobDescription: req.body.jobDescription,
         currentStatus: {
           connect: {
             name: req.body.statusName,
@@ -84,9 +84,28 @@ async function updateApplication(req: Request, res: Response) {
       where: {
         id: req.params.id,
       },
-      data: req.body,
+      data: {
+        companyName: req.body.companyName,
+        position: req.body.position,
+        salary: req.body.salary ? Number(req.body.salary) : null,
+        jobDescription: req.body.jobDescription,
+        currentStatus: req.body.statusName
+          ? {
+              connect: {
+                name: req.body.statusName,
+              },
+            }
+          : undefined,
+      },
     });
-  } catch (error) {}
+    res.status(200).json(application);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+    console.log(
+      `Error in updateApplication for application of id: ${req.params.id}`,
+      error
+    );
+  }
 }
 
 export default {

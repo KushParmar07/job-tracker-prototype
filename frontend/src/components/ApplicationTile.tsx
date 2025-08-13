@@ -38,7 +38,10 @@ const ApplicationTile = (props: ApplicationTileProps) => {
   };
 
   return (
-    <div className="card bg-primary w-full max-w-none lg:max-w-none p-2 sm:p-2 lg:p-3 mx-4 sm:mx-8 lg:ml-20 lg:mr-4 my-2 sm:my-2 lg:my-3 flex flex-col relative">
+    <div
+      className="card bg-primary w-full max-w-none lg:max-w-none p-2 sm:p-2 lg:p-3 mx-4 sm:mx-8 lg:ml-20 lg:mr-4 my-2 sm:my-2 lg:my-3 flex flex-col relative hover:cursor-pointer"
+      onClick={() => console.log(props.id)}
+    >
       {/* Delete button and Status section - aligned horizontally in top right */}
       <div className="absolute top-1 right-1 flex items-center gap-1">
         <div className="card bg-accent min-w-fit h-5 flex items-center justify-center text-center text-accent-content text-xs font-bold px-2 py-0 mt-3 whitespace-nowrap">
@@ -46,7 +49,10 @@ const ApplicationTile = (props: ApplicationTileProps) => {
         </div>
         <button
           className="w-5 h-5 bg-red-500 text-white border-none rounded-full flex items-center justify-center text-xs font-bold hover:bg-red-600 z-10 hover:cursor-pointer mx-1 mb-2"
-          onClick={() => deleteApplication(props.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            deleteApplication(props.id);
+          }}
         >
           X
         </button>
@@ -74,7 +80,10 @@ const ApplicationTile = (props: ApplicationTileProps) => {
       {/* Bottom section - Show/Hide Details */}
       <div className={`flex flex-col ${isOpen ? "flex-col-reverse" : ""}`}>
         <button
-          onClick={toggleDetails}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleDetails();
+          }}
           className="hover:text-gray-300 hover:cursor-pointer text-secondary-content border-none ml-auto px-1 py-0 text-xs font-semibold mt-1"
         >
           {isOpen ? "Hide Details" : "Show Details"}

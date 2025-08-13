@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 
 interface CreateApplicationModalProps {
   refreshApplications: () => Promise<void>;
+  selectedTileId?: string;
 }
 
 const createApplicationModal = ({
   refreshApplications,
+  selectedTileId,
 }: CreateApplicationModalProps) => {
   const [statuses, setStatuses] = useState<{ id: string; name: string }[]>([]);
   const [position, setPosition] = useState("");
@@ -22,6 +24,22 @@ const createApplicationModal = ({
     } catch (error) {
       console.error("Error fetching statuses:", error);
       return [];
+    }
+  };
+
+  const fillFormForEdit = () => {
+    if (selectedTileId) {
+      axios
+        .get(`http://localhost:5001/api/applications/${selectedTileId}`)
+        .then((response) => {
+          const data = response.data;
+          setPosition(data.position);
+          setCompany(data.companyName);
+          setSalary(data.salary);
+          setDescription(data.jobDescription);
+          setStatus(data.statusName);
+        });
+      console.log(selectedTileId);
     }
   };
 
@@ -47,7 +65,6 @@ const createApplicationModal = ({
       setDescription("");
       setStatus("");
 
-      // Close the modal
       const modal = document.getElementById(
         "createApplicationModal"
       ) as HTMLDialogElement;
@@ -78,6 +95,10 @@ const createApplicationModal = ({
 
   useEffect(() => {
     getStatuses();
+    if (selectedTileId) {
+      console.log("Filling form for edit");
+      fillFormForEdit();
+    }
   }, []);
 
   return (
