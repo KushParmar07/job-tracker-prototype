@@ -11,6 +11,7 @@ function App() {
 
   const [currentApplication, setCurrentApplication] =
     useState<Application | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const fetchApplications = async () => {
     try {
@@ -27,12 +28,14 @@ function App() {
     (
       document.getElementById("createApplicationModal") as HTMLDialogElement
     )?.showModal();
+    setModalOpen(true);
   };
 
   const closeModal = () => {
     (
       document.getElementById("createApplicationModal") as HTMLDialogElement
     )?.close();
+    setModalOpen(false);
   };
 
   const handleCreateApplication = async () => {
@@ -70,6 +73,7 @@ function App() {
         refreshApplications={fetchApplications}
         editingApplication={currentApplication}
         closeModal={closeModal}
+        modalOpen={modalOpen}
       />
     </div>
   );

@@ -6,12 +6,14 @@ interface CreateApplicationModalProps {
   refreshApplications: () => Promise<void>;
   editingApplication: Application | null;
   closeModal: () => void;
+  modalOpen: boolean;
 }
 
 const createApplicationModal = ({
   refreshApplications,
   editingApplication,
   closeModal,
+  modalOpen,
 }: CreateApplicationModalProps) => {
   const [statuses, setStatuses] = useState<{ id: string; name: string }[]>([]);
   const [position, setPosition] = useState("");
@@ -30,6 +32,7 @@ const createApplicationModal = ({
     }
   };
 
+  // Called when an application tile is clicked on to be edited
   const fillFormForEdit = () => {
     if (editingApplication) {
       setPosition(editingApplication.position);
@@ -64,8 +67,8 @@ const createApplicationModal = ({
         statusName: status,
       });
 
-      clearForm();
       closeModal();
+      clearForm();
       await refreshApplications();
     } catch (error) {
       console.error("Error creating application:", error);
@@ -92,17 +95,42 @@ const createApplicationModal = ({
   useEffect(() => {
     getStatuses();
     if (editingApplication) {
-      console.log("Filling form for edit");
       fillFormForEdit();
     }
-  }, [editingApplication]);
+    if (!modalOpen) {
+      // Delay to ensure the modal finishes closing before clearing the form
+      const timeoutId = setTimeout(() => {
+        clearForm();
+      }, 300);
+
+      return () => clearTimeout(timeoutId);
+    }
+
+    //handling modal close
+    const modal = document.getElementById(
+      "createApplicationModal"
+    ) as HTMLDialogElement;
+
+    if (modal) {
+      modal.addEventListener("close", closeModal);
+    }
+
+    return () => {
+      if (modal) {
+        modal.removeEventListener("close", closeModal);
+      }
+    };
+  }, [editingApplication, modalOpen]);
 
   return (
     <>
       <dialog id="createApplicationModal" className="modal">
         <div className="modal-box">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+            <button
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              onClick={closeModal}
+            >
               ✕
             </button>
           </form>
