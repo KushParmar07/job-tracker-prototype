@@ -6,6 +6,7 @@ import type Application from "../models/Application";
 interface ApplicationTileProps {
   application: Application;
   setApplications: React.Dispatch<React.SetStateAction<any[]>>;
+  onEditClick: (application: Application) => void;
 }
 
 const ApplicationTile = (props: ApplicationTileProps) => {
@@ -35,7 +36,9 @@ const ApplicationTile = (props: ApplicationTileProps) => {
   return (
     <div
       className="card bg-primary w-full max-w-none lg:max-w-none p-2 sm:p-2 lg:p-3 mx-4 sm:mx-8 lg:ml-20 lg:mr-4 my-2 sm:my-2 lg:my-3 flex flex-col relative hover:cursor-pointer"
-      onClick={() => console.log(props.application.id)}
+      onClick={() => {
+        props.onEditClick(props.application);
+      }}
     >
       <div className="absolute top-1 right-1 flex items-center gap-1">
         <div className="card bg-accent min-w-fit h-5 flex items-center justify-center text-center text-accent-content text-xs font-bold px-2 py-0 mt-3 whitespace-nowrap">

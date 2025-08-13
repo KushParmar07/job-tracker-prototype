@@ -4,17 +4,19 @@ import type Application from "../models/Application";
 
 interface CreateApplicationModalProps {
   refreshApplications: () => Promise<void>;
-  selectedTileId?: string;
+  editingApplication: Application | null;
+  closeModal: () => void;
 }
 
 const createApplicationModal = ({
   refreshApplications,
-  selectedTileId,
+  editingApplication,
+  closeModal,
 }: CreateApplicationModalProps) => {
   const [statuses, setStatuses] = useState<{ id: string; name: string }[]>([]);
   const [position, setPosition] = useState("");
   const [company, setCompany] = useState("");
-  const [salary, setSalary] = useState("");
+  const [salary, setSalary] = useState<number | undefined>(undefined);
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
 
@@ -29,19 +31,21 @@ const createApplicationModal = ({
   };
 
   const fillFormForEdit = () => {
-    if (selectedTileId) {
-      axios
-        .get(`http://localhost:5001/api/applications/${selectedTileId}`)
-        .then((response) => {
-          const data = response.data;
-          setPosition(data.position);
-          setCompany(data.companyName);
-          setSalary(data.salary);
-          setDescription(data.jobDescription);
-          setStatus(data.statusName);
-        });
-      console.log(selectedTileId);
+    if (editingApplication) {
+      setPosition(editingApplication.position);
+      setCompany(editingApplication.companyName);
+      setSalary(editingApplication.salary || undefined);
+      setDescription(editingApplication.jobDescription || "");
+      setStatus(editingApplication.currentStatus.name);
     }
+  };
+
+  const clearForm = () => {
+    setPosition("");
+    setCompany("");
+    setSalary(undefined);
+    setDescription("");
+    setStatus("");
   };
 
   const createApplication = async (
@@ -60,17 +64,8 @@ const createApplicationModal = ({
         statusName: status,
       });
 
-      setPosition("");
-      setCompany("");
-      setSalary("");
-      setDescription("");
-      setStatus("");
-
-      const modal = document.getElementById(
-        "createApplicationModal"
-      ) as HTMLDialogElement;
-      modal?.close();
-
+      clearForm();
+      closeModal();
       await refreshApplications();
     } catch (error) {
       console.error("Error creating application:", error);
@@ -96,11 +91,11 @@ const createApplicationModal = ({
 
   useEffect(() => {
     getStatuses();
-    if (selectedTileId) {
+    if (editingApplication) {
       console.log("Filling form for edit");
       fillFormForEdit();
     }
-  }, []);
+  }, [editingApplication]);
 
   return (
     <>
@@ -131,8 +126,10 @@ const createApplicationModal = ({
               type="number"
               placeholder="Salary (optional)"
               className="input"
-              value={salary}
-              onChange={(e) => setSalary(e.target.value)}
+              value={salary || ""}
+              onChange={(e) =>
+                setSalary(e.target.value ? Number(e.target.value) : undefined)
+              }
             ></input>
             <textarea
               className="textarea"
