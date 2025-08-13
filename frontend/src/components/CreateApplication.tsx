@@ -104,18 +104,6 @@ const createApplicationModal = ({
 
   return (
     <>
-      <button
-        className="btn bg-accent text-accent-content"
-        onClick={() =>
-          (
-            document.getElementById(
-              "createApplicationModal"
-            ) as HTMLDialogElement
-          )?.showModal()
-        }
-      >
-        Create Application
-      </button>
       <dialog id="createApplicationModal" className="modal">
         <div className="modal-box">
           <form method="dialog">

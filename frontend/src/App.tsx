@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import type Application from "./models/Application";
+import CreateApplicationModal from "./components/CreateApplication";
 
 function App() {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -26,7 +27,7 @@ function App() {
   return (
     <div className="min-h-screen">
       <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#14181c_60%,#8B0000_100%)]" />
-      <Navbar refreshApplications={fetchApplications} />
+      <Navbar />
       <div className="container px-4 sm:px-6 lg:px-8">
         <ul>
           {applications.map((application) => (
@@ -39,6 +40,7 @@ function App() {
           ))}
         </ul>
       </div>
+      <CreateApplicationModal refreshApplications={fetchApplications} />
     </div>
   );
 }
