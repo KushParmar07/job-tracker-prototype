@@ -179,7 +179,11 @@ const createApplicationModal = ({
             </button>
           </form>
           <div className="flex flex-col items-center">
-            <h3 className="font-bold text-lg my-3">Create a new application</h3>
+            <h3 className="font-bold text-lg my-3">
+              {editingApplication
+                ? "Edit application"
+                : "Create a new application"}
+            </h3>
             <input
               type="text"
               placeholder="Position title"

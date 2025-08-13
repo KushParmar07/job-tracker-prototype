@@ -7,6 +7,7 @@ interface Application {
   jobDescription?: string;
   currentStatus: {
     name: string;
+    priority: number;
   };
 }
 

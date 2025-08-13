@@ -41,7 +41,19 @@ const ApplicationTile = (props: ApplicationTileProps) => {
       }}
     >
       <div className="absolute top-1 right-1 flex items-center gap-1">
-        <div className="card bg-accent min-w-fit h-5 flex items-center justify-center text-center text-accent-content text-xs font-bold px-2 py-0 mt-3 whitespace-nowrap">
+        <div
+          className={`card min-w-fit h-5 flex items-center justify-center text-center text-xs font-bold px-2 py-0 mt-3 whitespace-nowrap ${
+            props.application.currentStatus.name === "Applied"
+              ? "bg-blue-500 text-white"
+              : props.application.currentStatus.name === "Interviewing"
+              ? "bg-yellow-500 text-black"
+              : props.application.currentStatus.name === "Offer"
+              ? "bg-green-500 text-gray-200"
+              : props.application.currentStatus.name === "Rejected"
+              ? "bg-red-500 text-white"
+              : ""
+          }`}
+        >
           {props.application.currentStatus.name}
         </div>
         <button
