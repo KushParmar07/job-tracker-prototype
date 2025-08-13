@@ -1,15 +1,10 @@
 import { useState } from "react";
 import { formatDate } from "../lib/utils";
 import axios from "axios";
+import type Application from "../models/Application";
 
 interface ApplicationTileProps {
-  company: string;
-  position: string;
-  dateApplied: string;
-  status: string;
-  salary?: string | null;
-  description?: string;
-  id: string;
+  application: Application;
   setApplications: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
@@ -24,7 +19,7 @@ const ApplicationTile = (props: ApplicationTileProps) => {
     try {
       if (
         window.confirm(
-          `Are you sure you want to delete ${props.position} at ${props.company}?`
+          `Are you sure you want to delete ${props.application.position} at ${props.application.companyName}?`
         )
       ) {
         await axios.delete(`http://localhost:5001/api/applications/${id}`);
@@ -40,18 +35,17 @@ const ApplicationTile = (props: ApplicationTileProps) => {
   return (
     <div
       className="card bg-primary w-full max-w-none lg:max-w-none p-2 sm:p-2 lg:p-3 mx-4 sm:mx-8 lg:ml-20 lg:mr-4 my-2 sm:my-2 lg:my-3 flex flex-col relative hover:cursor-pointer"
-      onClick={() => console.log(props.id)}
+      onClick={() => console.log(props.application.id)}
     >
-      {/* Delete button and Status section - aligned horizontally in top right */}
       <div className="absolute top-1 right-1 flex items-center gap-1">
         <div className="card bg-accent min-w-fit h-5 flex items-center justify-center text-center text-accent-content text-xs font-bold px-2 py-0 mt-3 whitespace-nowrap">
-          {props.status}
+          {props.application.currentStatus.name}
         </div>
         <button
           className="w-5 h-5 bg-red-500 text-white border-none rounded-full flex items-center justify-center text-xs font-bold hover:bg-red-600 z-10 hover:cursor-pointer mx-1 mb-2"
           onClick={(e) => {
             e.stopPropagation();
-            deleteApplication(props.id);
+            deleteApplication(props.application.id);
           }}
         >
           X
@@ -61,17 +55,17 @@ const ApplicationTile = (props: ApplicationTileProps) => {
       {/* Main single row with all content */}
       <div className="flex items-center border-b border-primary-content pb-1 pr-16">
         <h1 className="font-bold text-lg sm:text-lg lg:text-xl text-primary-content mr-3">
-          {props.position}
+          {props.application.position}
         </h1>
         <span className="text-xs text-slate-600 mr-1">at</span>
         <p className="text-sm text-slate-700 font-medium mr-3">
-          {props.company}
+          {props.application.companyName}
         </p>
-        {props.salary && (
+        {props.application.salary && (
           <>
             <span className="text-xs text-slate-600 mr-1">•</span>
             <p className="text-sm text-slate-700 font-semibold">
-              ${props.salary}
+              ${props.application.salary}
             </p>
           </>
         )}
@@ -91,10 +85,10 @@ const ApplicationTile = (props: ApplicationTileProps) => {
         {isOpen && (
           <div className="flex flex-col lg:flex-row mt-1 gap-1 lg:gap-0">
             <p className="text-xs sm:text-sm text-slate-600 font-medium border-none lg:mr-4">
-              {formatDate(new Date(props.dateApplied))}
+              {formatDate(new Date(props.application.dateApplied))}
             </p>
             <p className="text-xs sm:text-sm text-slate-600 font-medium border-none lg:ml-auto">
-              {props.description}
+              {props.application.jobDescription}
             </p>
           </div>
         )}

@@ -12,7 +12,7 @@ const Navbar = ({ refreshApplications }: NavbarProps) => {
         <span className="hidden sm:inline">Tracking Site Prototype</span>
         <span className="sm:hidden">Job Tracker</span>
       </h1>
-
+      <CreateApplicationModal refreshApplications={refreshApplications} />
       <img
         src={trackerLogo}
         alt="Logo"

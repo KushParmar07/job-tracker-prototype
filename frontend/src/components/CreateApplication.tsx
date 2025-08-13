@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import type Application from "../models/Application";
 
 interface CreateApplicationModalProps {
   refreshApplications: () => Promise<void>;

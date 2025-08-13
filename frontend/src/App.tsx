@@ -3,11 +3,7 @@ import ApplicationTile from "./components/ApplicationTile";
 import Navbar from "./components/Navbar";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
-interface Application {
-  id: string;
-  [key: string]: any;
-}
+import type Application from "./models/Application";
 
 function App() {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -36,13 +32,7 @@ function App() {
           {applications.map((application) => (
             <li key={application.id}>
               <ApplicationTile
-                company={application.companyName}
-                position={application.position}
-                dateApplied={application.dateApplied}
-                status={application.currentStatus.name}
-                salary={application.salary}
-                description={application.jobDescription}
-                id={application.id}
+                application={application}
                 setApplications={setApplications}
               />
             </li>
