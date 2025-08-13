@@ -92,6 +92,50 @@ const createApplicationModal = ({
     );
   };
 
+  const updateApplication = async (
+    position: string,
+    company: string,
+    salary: number,
+    description: string,
+    status: string
+  ) => {
+    try {
+      if (!editingApplication) {
+        return;
+      }
+      await axios.put(
+        `http://localhost:5001/api/applications/${editingApplication.id}`,
+        {
+          position,
+          companyName: company,
+          salary,
+          jobDescription: description,
+          statusName: status,
+        }
+      );
+
+      closeModal();
+      clearForm();
+      await refreshApplications();
+    } catch (error) {
+      console.error("Error updating application:", error);
+    }
+  };
+
+  const handleUpdateApplication = async () => {
+    if (!editingApplication) {
+      return;
+    }
+
+    await updateApplication(
+      position,
+      company,
+      salary ? Number(salary) : 0,
+      description,
+      status
+    );
+  };
+
   useEffect(() => {
     getStatuses();
     if (editingApplication) {
@@ -181,9 +225,13 @@ const createApplicationModal = ({
             </select>
             <button
               className="btn bg-accent text-accent-content"
-              onClick={handleCreateApplication}
+              onClick={() => {
+                editingApplication
+                  ? handleUpdateApplication()
+                  : handleCreateApplication();
+              }}
             >
-              Create
+              {editingApplication ? "Update" : "Create"}
             </button>
           </div>
         </div>
