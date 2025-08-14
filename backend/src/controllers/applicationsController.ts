@@ -1,7 +1,8 @@
 import prismaClient from "../lib/prisma";
 import { Request, Response } from "express";
+import { AuthRequest } from "../middleware/authMiddleware";
 
-async function getApplications(_: Request, res: Response) {
+async function getApplications(req: AuthRequest, res: Response) {
   try {
     const applications = await prismaClient.jobApplication.findMany({
       include: {
@@ -9,6 +10,9 @@ async function getApplications(_: Request, res: Response) {
       },
       orderBy: {
         dateApplied: "desc",
+      },
+      where: {
+        Userid: req.userId,
       },
     });
     res.status(200).json(applications);
@@ -18,11 +22,12 @@ async function getApplications(_: Request, res: Response) {
   }
 }
 
-async function getApplication(req: Request, res: Response) {
+async function getApplication(req: AuthRequest, res: Response) {
   try {
     const application = await prismaClient.jobApplication.findUnique({
       where: {
         id: req.params.id,
+        Userid: req.userId,
       },
       include: {
         currentStatus: true,
@@ -38,7 +43,7 @@ async function getApplication(req: Request, res: Response) {
   }
 }
 
-async function createApplication(req: Request, res: Response) {
+async function createApplication(req: AuthRequest, res: Response) {
   try {
     const application = await prismaClient.jobApplication.create({
       data: {
@@ -51,9 +56,13 @@ async function createApplication(req: Request, res: Response) {
             name: req.body.statusName,
           },
         },
+        User: {
+          connect: {
+            id: req.userId,
+          },
+        },
       },
     });
-    console.log(application);
     res.status(200).json(application);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
@@ -61,11 +70,12 @@ async function createApplication(req: Request, res: Response) {
   }
 }
 
-async function deleteApplication(req: Request, res: Response) {
+async function deleteApplication(req: AuthRequest, res: Response) {
   try {
-    const application = await prismaClient.jobApplication.delete({
+    const application = await prismaClient.jobApplication.deleteMany({
       where: {
         id: req.params.id,
+        Userid: req.userId!,
       },
     });
     res.status(200).json(application);
@@ -78,11 +88,12 @@ async function deleteApplication(req: Request, res: Response) {
   }
 }
 
-async function updateApplication(req: Request, res: Response) {
+async function updateApplication(req: AuthRequest, res: Response) {
   try {
     const application = await prismaClient.jobApplication.update({
       where: {
         id: req.params.id,
+        Userid: req.userId,
       },
       data: {
         companyName: req.body.companyName,
