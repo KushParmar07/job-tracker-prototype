@@ -19,6 +19,9 @@ model jobApplication {
   jobDescription  String?
   currentStatus   status   @relation(fields: [currentStatusId], references: [id])
   currentStatusId String
+
+  User User @relation(fields: [Userid], references: [id])
+  Userid String
 }
 
 model status {
@@ -26,4 +29,15 @@ model status {
   name           String           @unique
   priority       Int
   jobApplication jobApplication[]
+
+  User   User?   @relation(fields: [Userid], references: [id])
+  Userid String?
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  jobApplications jobApplication[]
+  statuses  status[]
 }
